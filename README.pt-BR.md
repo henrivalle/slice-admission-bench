@@ -6,8 +6,11 @@ Benchmark para ensinar controle de admissão com duas restrições, largura de b
 
 ```bash
 python3 -m slice_admission --seed 42 --rounds 10 --requests 12 --bandwidth 16 --compute 16 > benchmark.csv
+python3 -m slice_admission --rounds 2 --policy fifo
 python3 -m unittest discover -s tests -v
 ```
+
+Use `--policy` para executar somente `fifo`, `density` ou `optimal`. Sem essa opção, o benchmark continua executando as três políticas na ordem original.
 
 O CSV tem uma linha por rodada e política, com o número de ofertas, admissões, recompensa aceita e recursos usados. Cada rodada começa com o orçamento completo. A semente fixa a sequência sintética para uma mesma versão do Python, e todas as políticas recebem as mesmas ofertas na rodada.
 

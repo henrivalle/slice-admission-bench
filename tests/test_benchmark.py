@@ -79,6 +79,18 @@ class CommandLineTests(unittest.TestCase):
                 self.assertLessEqual(int(row["compute_used"]), 6)
                 self.assertLessEqual(int(row["reward"]), int(rows["optimal"]["reward"]))
 
+    def test_single_policy_limits_output_to_requested_policy(self):
+        result = self.run_benchmark("--rounds", "2", "--policy", "fifo")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        records = list(csv.DictReader(result.stdout.splitlines()))
+        self.assertEqual(len(records), 2)
+        self.assertEqual([row["policy"] for row in records], ["fifo", "fifo"])
+
+    def test_invalid_policy_reports_usage_error(self):
+        bad = self.run_benchmark("--policy", "unknown")
+        self.assertEqual(bad.returncode, 2)
+        self.assertIn("invalid choice", bad.stderr)
+
     def test_invalid_budget_reports_usage_error(self):
         bad = self.run_benchmark("--bandwidth", "0")
         self.assertEqual(bad.returncode, 2)

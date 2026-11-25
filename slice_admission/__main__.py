@@ -23,11 +23,19 @@ def main() -> int:
     parser.add_argument("--bandwidth", type=positive_int, default=16, help="integer bandwidth budget")
     parser.add_argument("--compute", type=positive_int, default=16, help="integer compute budget")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--policy",
+        choices=("fifo", "density", "optimal"),
+        help="run only one admission policy",
+    )
     args = parser.parse_args()
 
     rng = random.Random(args.seed)
     budget = Budget(args.bandwidth, args.compute)
     policies = (("fifo", select_fifo), ("density", select_density), ("optimal", select_optimal))
+    if args.policy is not None:
+        policies = tuple((name, policy) for name, policy in policies if name == args.policy)
+
     writer = csv.writer(sys.stdout, lineterminator="\n")
     writer.writerow(("round", "policy", "requests", "accepted", "reward", "bandwidth_used", "compute_used"))
 

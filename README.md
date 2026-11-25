@@ -6,8 +6,11 @@ A small benchmark for teaching admission control with two constraints, bandwidth
 
 ```bash
 python3 -m slice_admission --seed 42 --rounds 10 --requests 12 --bandwidth 16 --compute 16 > benchmark.csv
+python3 -m slice_admission --rounds 2 --policy fifo
 python3 -m unittest discover -s tests -v
 ```
+
+Use `--policy` to run only `fifo`, `density`, or `optimal`. If it is omitted, the benchmark runs all three policies in that order, as before.
 
 The CSV has one row per round and policy, with the number of offers, admissions, accepted reward, and resources used. Each round starts with a fresh budget. The seed fixes the synthetic sequence for a given Python version, and all policies see the same offers within a round.
 
