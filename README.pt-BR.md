@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-Benchmark para ensinar controle de admissão com duas restrições, largura de banda e computação. Ele compara a recompensa aceita por três políticas usando os mesmos orçamentos e cargas sintéticas. A execução usa a biblioteca padrão do Python 3.9 ou posterior.
+Benchmark para ensinar controle de admissão com duas restrições, largura de banda e computação. Ele compara a recompensa aceita por três políticas usando os mesmos orçamentos e cargas sintéticas ou importadas. A execução usa a biblioteca padrão do Python 3.9 ou posterior.
 
 ```bash
 python3 -m slice_admission --seed 42 --rounds 10 --requests 12 --bandwidth 16 --compute 16 > benchmark.csv
@@ -20,7 +20,15 @@ O CSV tem uma linha por rodada e política, com o número de ofertas, admissões
 | `density` | Ordena um lote conhecido por recompensa por custo normalizado de recursos e admite as ofertas que cabem. |
 | `optimal` | Usa o lote completo e orçamentos inteiros para calcular a recompensa viável máxima por programação dinâmica. Serve como limite superior offline. |
 
-O modelo usa lotes independentes com demandas inteiras e orçamentos fixos. Use orçamentos pequenos com o otimizador exato. O número de estados alcançáveis pode crescer com o produto dos dois orçamentos. O CSV ilustra as escolhas desse modelo e usa dados sintéticos em toda a execução.
+O modelo usa lotes independentes com demandas inteiras e orçamentos fixos. Use orçamentos pequenos com o otimizador exato. O número de estados alcançáveis pode crescer com o produto dos dois orçamentos. O CSV registra os resultados sob essas premissas.
+
+## Reproduzir uma carga a partir de CSV
+
+```bash
+python3 -m slice_admission --trace examples/admission-trace.csv --bandwidth 3 --compute 2
+```
+
+Use um CSV UTF-8 com quatro colunas de números inteiros positivos: `round`, `bandwidth`, `compute` e `reward`. Ordene as rodadas e preserve a ordem de chegada dentro de cada uma. Use a mesma unidade para demandas e orçamentos. Converta uma carga anonimizada para esse formato para comparar políticas com as mesmas requisições. O exemplo usa dados sintéticos. A capacidade é reiniciada em cada rodada, de forma que as janelas de decisão são independentes.
 
 ## Contexto acadêmico
 

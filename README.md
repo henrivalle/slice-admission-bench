@@ -2,7 +2,7 @@
 
 [Português (Brasil)](README.pt-BR.md)
 
-A small benchmark for teaching admission control with two constraints, bandwidth and compute. It compares how much reward three policies can accept under the same budgets and synthetic workload. Python 3.9 or newer runs it with the standard library.
+A small benchmark for teaching admission control with two constraints, bandwidth and compute. It compares how much reward three policies can accept under the same budgets and either synthetic or imported requests. Python 3.9 or newer runs it with the standard library.
 
 ```bash
 python3 -m slice_admission --seed 42 --rounds 10 --requests 12 --bandwidth 16 --compute 16 > benchmark.csv
@@ -20,7 +20,15 @@ The CSV has one row per round and policy, with the number of offers, admissions,
 | `density` | Sorts a known batch by reward per normalized resource cost, then admits offers that fit. |
 | `optimal` | Uses the complete batch and integer budgets to compute the maximum feasible reward with dynamic programming. It serves as an offline upper bound. |
 
-The model uses independent batches with integer demand and fixed budgets. Keep budgets small when running the exact optimizer. The number of reachable states can grow with the product of the two budgets. The generated CSV illustrates trade-offs in this model and uses synthetic inputs throughout.
+The model uses independent batches with integer demand and fixed budgets. Keep budgets small when running the exact optimizer. The number of reachable states can grow with the product of the two budgets. The generated CSV reports trade-offs under these assumptions.
+
+## Replay a workload trace
+
+```bash
+python3 -m slice_admission --trace examples/admission-trace.csv --bandwidth 3 --compute 2
+```
+
+Use a UTF-8 CSV with four positive integer columns named `round`, `bandwidth`, `compute`, and `reward`. Group rows in ascending round order and keep requests in arrival order within each round. Demand units must match the chosen budgets. Convert an anonymized resource trace into this tabular format to compare baselines on the same requests. The example is synthetic. Each round resets capacity, so the model represents independent decision windows.
 
 ## Research context
 
